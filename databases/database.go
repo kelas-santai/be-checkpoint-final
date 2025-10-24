@@ -31,5 +31,6 @@ func Connect() {
 		&entity.Merchant{},
 		&entity.Category{},
 		&entity.Product{},
+		&entity.UsersProduct{},
 	)
 }

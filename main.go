@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"meeting4/controllers"
-	"meeting4/databases"
+	database "meeting4/databases"
 	"meeting4/pkg/middleware"
 	"meeting4/pkg/tools"
 
@@ -50,8 +50,8 @@ func main() {
 	product.Post("/createProduct", middleware.JWTProtected(), controllers.CreateProduct)
 	product.Get("/getProduct", middleware.JWTProtected(), controllers.GetProduct)
 	product.Get("/getProductByID", middleware.JWTProtected(), controllers.GetProductById)
-	product.Put("/updateProduct/:id", middleware.JWTProtected(), controllers.UpdateProduct)
-	product.Delete("/deleteProduct/:id", middleware.JWTProtected(), controllers.DeleteProduct)
+	product.Put("/updateProduct", middleware.JWTProtected(), controllers.UpdateProduct)
+	product.Delete("/deleteProduct", middleware.JWTProtected(), controllers.DeleteProduct)
 
 	log.Fatal(app.Listen(":3000"))
 }

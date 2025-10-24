@@ -107,6 +107,10 @@ func GetUserByToken(c *fiber.Ctx) error {
 
 	database.DB.Where("id = ?", idMerchant).First(&merchant)
 
+	//ubah vari able foto
+
+	merchant.Foto = "http://localhost:3000/static/merchant/" + merchant.Foto
+
 	//Kita Show
 
 	return c.JSON(fiber.Map{
@@ -116,3 +120,83 @@ func GetUserByToken(c *fiber.Ctx) error {
 }
 
 //Meeting Rabu Kita Lanjut
+
+//fungsi update dan juga delete
+
+func UpdateMerchant(c *fiber.Ctx) error {
+
+	//UpdateBerdaasrkan Token
+	idMerchant := c.Locals("idMerchant")
+
+	//Kita Cari Dulu datanya ada apa enggak
+	var merchant entity.Merchant
+	database.DB.Where("id =?", idMerchant).First(&merchant)
+
+	//cek databya
+	if merchant.Id == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"Pesan": "Data Merchant Tidak Di Temukan",
+		})
+	}
+
+	//Bikin Untuk Update Datanya
+
+	//
+	var request entity.Merchant
+
+	err := c.BodyParser(&request)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"Pesan": "Gagal",
+		})
+	}
+
+	//kita ubah data merchantnya
+	merchant.Nama = request.Nama
+	merchant.NoTelpon = request.NoTelpon
+	merchant.Email = request.Email
+	merchant.Lokasi = request.Lokasi
+	merchant.UpdateAt = time.Now().Format("2006-01-02 15:04:05")
+
+	//untuk foto itu adalah File
+	fileFoto, _ := c.FormFile("foto")
+
+	if fileFoto != nil {
+		//Membuat Folder nya
+		folderPath := "public/foto-merchant/" + tools.RemoveSpaces(fileFoto.Filename)
+		//Simpan ke dalam foldedr si foto nya ini dan untuk di database nya itu adalah yang di smpan yaitu file name yang fotonya
+		if err := c.SaveFile(fileFoto, folderPath); err != nil {
+			return err
+		}
+		merchant.Foto = tools.RemoveSpaces(fileFoto.Filename)
+	}
+
+	//simpan perubahan
+	database.DB.Save(&merchant)
+
+	return c.JSON(fiber.Map{
+		"Pesan": "Berhasil Mengupdate Data Merchant",
+	})
+}
+
+//
+func DeletMerchant(c *fiber.Ctx) error {
+	//Delete Berdasarkan Token
+	idMerchant := c.Locals("idMerchant")
+
+	//Kita Cari Dulu datanya ada apa enggak
+	var merchant entity.Merchant
+	database.DB.Where("id =?", idMerchant).First(&merchant)
+	//cek databya
+	if merchant.Id == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"Pesan": "Data Merchant Tidak Di Temukan",
+		})
+	}
+	//Hapus Data
+	database.DB.Delete(&merchant)
+	return c.JSON(fiber.Map{
+		"Pesan": "Berhasil Menghapus Data Merchant",
+	})
+
+}

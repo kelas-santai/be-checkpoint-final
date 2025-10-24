@@ -15,7 +15,7 @@ var DB *gorm.DB
 func Connect() {
 	//secara default user databasse adalaah "root" dan passwordnya kosong
 	//122.7 itu adalah host kita (Hst dari IP Server ), 3306 itu adadlag port default dari Mysql
-	dsn := "root@tcp(127.0.0.1:3306)/meeting4?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root@tcp(127.0.0.1:3306)/meeting5?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("database gagal terkoneksi")

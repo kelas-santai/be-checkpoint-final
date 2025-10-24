@@ -47,11 +47,11 @@ func main() {
 	category.Delete("/deleteKategori/:id", controllers.DeleteKategori)
 
 	product := app.Group("/product")
-	product.Post("/createProduct", controllers.CreateProduct)
-	product.Get("/getProduct", controllers.GetProduct)
-	product.Get("/getProductByID", controllers.GetProductById)
-	product.Put("/updateProduct/:id", controllers.UpdateProduct)
-	product.Delete("/deleteProduct/:id", controllers.DeleteProduct)
+	product.Post("/createProduct", middleware.JWTProtected(), controllers.CreateProduct)
+	product.Get("/getProduct", middleware.JWTProtected(), controllers.GetProduct)
+	product.Get("/getProductByID", middleware.JWTProtected(), controllers.GetProductById)
+	product.Put("/updateProduct/:id", middleware.JWTProtected(), controllers.UpdateProduct)
+	product.Delete("/deleteProduct/:id", middleware.JWTProtected(), controllers.DeleteProduct)
 
 	log.Fatal(app.Listen(":3000"))
 }
